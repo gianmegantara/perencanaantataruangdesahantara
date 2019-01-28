@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\gianmegantara\Google Drive\SKRIPSHIT\SKRIPSHIT NEW\perencanaantataruangdesahantara\venv"
+VIRTUAL_ENV="C:\Users\gianmegantara\Desktop\skripshit\skripsi_2.0\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

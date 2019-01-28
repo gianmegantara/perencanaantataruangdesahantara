@@ -1,153 +1,197 @@
-import random
-import csv
+import random, csv
 
-jumlahGen = 5
-jumlahKromosom = 5
-mutationRate = 0.1
+jumlahKromosom = 4
+jumlahGen = 4
+crossoverRate = 1
+mutationRate = 0.5
+totalPelanggaran = 0
+DataProyeksi = 0
 
 def loadCsv():
     array = []
-    direktori = open('../data.csv','r')
+    arrayProyeksi = []
+    direktori = open('../datafixlastest.csv','r')
     reader = csv.reader(direktori)
     for row in reader:
-        array.insert(0,row)
+        array.insert(len(array),row)
+        arrayProyeksi.insert(len(arrayProyeksi),row)
+    global DataProyeksi
+    DataProyeksi = arrayProyeksi
     return array
-
-data = loadCsv()
+Data = loadCsv()
+print("Banyak Data",len(Data))
 
 def inisialisasiPopulasi():
     populasi = []
     for j in range(jumlahKromosom):
         array = []
-        randomgen = random.sample(range(0,29), jumlahGen)
+        randomgen = random.sample(range(0, (len(Data) - 1)), jumlahGen)
         for i in randomgen:
-            datarandom = data[i]
-            array.insert(0,datarandom)
-        populasi.insert(0,array)
+            datarandom = Data[i]
+            array.insert(len(array), datarandom)
+        populasi.insert(len(populasi), array)
     return populasi
-
 populasi = inisialisasiPopulasi()
-
-print('POPULASI')
+print("POPULASI")
 for i in range(len(populasi)):
-    print(populasi[i])
+    print("Kromosom", i)
+    for j in range(len(populasi[i])):
+        print(populasi[i][j])
+print()
+print("#"*1000)
 
-def evaluateFitness():
-    individuFitness = []
+def evaluasiFitness():
+    fitnessKromosom = []
     for i in range(jumlahKromosom):
-        kromosom =[]
+        kromosom = []
         fitness = 0
-        for j in range(jumlahKromosom):
+        for j in range(jumlahGen):
             for k in range(1):
                 if populasi[i][j][3] == 'Hutan':
-                    fitness = fitness + 1
-                elif populasi[i][j][3] == 'Sawah Irigasi':
-                    fitness = fitness + 1
+                    fitness += 1
+                    if populasi[i][j] in Data:
+                        Data.remove(populasi[i][j])
+                elif populasi[i][j][3] == 'SawahIrigasi':
+                    fitness += 1
+                    if populasi[i][j] in Data:
+                        Data.remove(populasi[i][j])
                 elif populasi[i][j][3] == 'Pemukiman':
-                    fitness = fitness + 1
-            kromosom.insert(4,populasi[i][j])
-        kromosom.insert(0, 1-fitness/jumlahKromosom)
-        individuFitness.insert(0,kromosom)
-    return individuFitness
+                    fitness += 1
+                    if populasi[i][j] in Data:
+                        Data.remove(populasi[i][j])
+            kromosom.insert(0, populasi[i][j])
+        kromosom.insert(0, 1 - fitness / jumlahGen)
+        kromosom.insert(1, fitness)
+        fitnessKromosom.insert(0, kromosom)
+    return fitnessKromosom
+fitnessKromosom = evaluasiFitness()
+fitnessKromosom.sort()
+print()
+print("FITNESS POPULASI")
+for i in range(len(fitnessKromosom)):
+    print("INDIVIDU")
+    for j in range(len(fitnessKromosom[i])):
+        print(fitnessKromosom[i][j])
+print()
+print("#"*1000)
 
-individuFitness = evaluateFitness()
-individuFitness.sort()
+nilai = 0
+iteration = 1
+while nilai < 1:
 
-print('FITNESS INDIVIDU')
-for i in range(len(individuFitness)):
-    print('fitness individu',i,individuFitness[i])
-
-def crossoverKromosom():
-    parent = individuFitness[3:5]
-
-    parent1 = parent[0][1:6]
-    parent2 = parent[1][1:6]
-
-    children =[]
-    child1 = []
-    child1.insert(0,parent2[0])
-    child1.insert(1,parent2[1])
-    child1.insert(2,parent1[2])
-    child1.insert(3,parent1[3])
-    child1.insert(4,parent1[4])
-
-    child2 = []
-    child2.insert(0,parent1[0])
-    child2.insert(1,parent1[1])
-    child2.insert(2,parent2[2])
-    child2.insert(3,parent2[3])
-    child2.insert(4,parent2[4])
-
-    children.insert(0,child1)
-    children.insert(1,child2)
-
-    return children
-
-children = crossoverKromosom()
-print('ANAK')
-for i in range(len(children)):
-    print('anak',i,children[i])
-
-def mutation():
-    mutant = []
-    mutant1 = children[0]
-    mutant2 = children[1]
-    for i in range(jumlahKromosom):
+    print("CROSSOVER")
+    def crossoverKromosom():
         randomValue = random.random()
-        randomData = random.randint(0,29)
-        if randomValue <= mutationRate:
-            mutant1[i] = data[randomData]
-    for i in range(jumlahKromosom):
-        randomValue = random.random()
-        randomData = random.randint(0,29)
-        if randomValue <= mutationRate:
-            mutant2[i] = data[randomData]
+        parent = fitnessKromosom[jumlahKromosom - 2:jumlahKromosom]
+        parent1 = parent[0][2:]
+        parent2 = parent[1][2:]
+        print("PARENT 1")
+        for i in range(len(parent1)):
+            print(parent1[i])
+        print("PARENT 2")
+        for i in range(len(parent2)):
+            print(parent2[i])
+        if randomValue <= crossoverRate:
+            lenParent1 = round(len(parent1) / 2)
+            lenParent2 = round(len(parent2) / 2)
+            children = []
+            child1 = []
+            for i in range(0, lenParent1):
+                child1.insert(i, parent2[i])
+            for i in range(lenParent1, len(parent1)):
+                child1.insert(i, parent1[i])
+            child2 = []
+            for i in range(0, lenParent2):
+                child2.insert(i, parent1[i])
+            for i in range(lenParent2, len(parent2)):
+                child2.insert(i, parent2[i])
+            children.insert(0, child1)
+            children.insert(1, child2)
+            return children
+        else:
+            children = []
+            children.insert(0, parent1)
+            children.insert(1, parent2)
+            return children
+    children = crossoverKromosom()
+    print("CHILDREN")
+    for i in range(len(children)):
+        print("CHILD", i)
+        for j in range(len(children[i])):
+            print(children[i][j])
+    print()
+    print("#"*1000)
+    print()
 
-    mutant.insert(0,mutant1)
-    mutant.insert(1,mutant2)
-
-    return mutant
-
-mutant = mutation()
-print('MUTANT')
-for i in range(len(mutant)):
-    print('mutant',i,mutant[i])
-
-def regeneration():
-    fitnessMutant = []
+    def mutasiKromosom():
+        mutant = []
+        mutant1 = children[0]
+        mutant2 = children[1]
+        for i in range(jumlahGen):
+            randomValue = random.random()
+            randomData = random.randint(0, (len(Data) - 1))
+            if randomValue <= mutationRate:
+                if Data[randomData] in mutant1:
+                    continue
+                else:
+                    mutant1[i] = Data[randomData]
+        for i in range(jumlahGen):
+            randomValue = random.random()
+            randomData = random.randint(0, (len(Data) - 1))
+            if randomValue <= mutationRate:
+                if Data[randomData] in mutant2:
+                    continue
+                else:
+                    mutant2[i] = Data[randomData]
+        mutant.insert(0, mutant1)
+        mutant.insert(1, mutant2)
+        return mutant
+    mutant = mutasiKromosom()
+    print("MUTASI")
     for i in range(len(mutant)):
-        arrayMutant = []
-        fitness = 0
+        print("MUTANT", i)
         for j in range(len(mutant[i])):
-            for k in range(1):
-                if mutant[i][j][3] == 'Hutan':
-                    fitness = fitness + 1
-                elif mutant[i][j][k] == 'Sawah Irigasi':
-                    fitness = fitness + 1
-                elif mutant[i][j][3] == 'Pemukiman':
-                    fitness = fitness + 1
-            arrayMutant.insert(4,mutant[i][j])
-        arrayMutant.insert(0, 1-fitness/jumlahKromosom)
-        fitnessMutant.insert(0,arrayMutant)
-    individuFitness.insert(5,fitnessMutant[0])
-    individuFitness.insert(6,fitnessMutant[1])
-    print('generasi baru')
-    individuFitness.sort()
-    del individuFitness[0:2]
-    for i in range(len(individuFitness)):
-        print(individuFitness[i])
+            print(mutant[i][j])
+    print('GENERASI', iteration)
+    def regenerasi():
+        fitnessMutant = []
+        pelanggaran = 0
+        for i in range(len(mutant)):
+            arrayMutant = []
+            fitness = 0
+            for j in range(len(mutant[i])):
+                for k in range(1):
+                    if mutant[i][j][3] == 'Hutan':
+                        fitness += 1
+                        if mutant[i][j] in Data:
+                            Data.remove(mutant[i][j])
+                    elif mutant[i][j][3] == 'SawahIrigasi':
+                        fitness += 1
+                        if mutant[i][j] in Data:
+                            Data.remove(mutant[i][j])
+                    elif mutant[i][j][3] == 'Pemukiman':
+                        fitness += 1
+                        if mutant[i][j] in Data:
+                            Data.remove(mutant[i][j])
+                arrayMutant.insert(0, mutant[i][j])
+            arrayMutant.insert(0, 1 - fitness / jumlahGen)
+            arrayMutant.insert(1, fitness)
+            fitnessMutant.insert(0, arrayMutant)
+        fitnessKromosom.insert(len(fitnessKromosom) - 1, fitnessMutant[0])
+        fitnessKromosom.insert(len(fitnessKromosom) - 2, fitnessMutant[1])
+        fitnessKromosom.sort()
+        del fitnessKromosom[0:2]
+        for i in range(len(fitnessKromosom)):
+            print('Kromosom', i)
+            for j in range(len(fitnessKromosom[i])):
+                print(fitnessKromosom[i][j])
+            pelanggaran += fitnessKromosom[i][1]
+        global totalPelanggaran
+        totalPelanggaran += pelanggaran
+        return fitnessKromosom
 
-newGeneration = regeneration()
+    newGeneration = regenerasi()
 
-for i in range(100):
-    mutation()
-    regeneration()
-    for j in range(1):
-        inisialisasiPopulasi()
-        evaluateFitness()
-        crossoverKromosom()
-
-
-
-
-
+    if fitnessKromosom[len(fitnessKromosom)-1][0] >= 1.0:
+        nilai = 2
+    iteration += 1

@@ -1,4 +1,4 @@
-#!"C:\Users\gianmegantara\Google Drive\SKRIPSHIT\SKRIPSHIT NEW\perencanaantataruangdesahantara\venv\Scripts\python.exe"
+#!C:\Users\gianmegantara\Desktop\skripshit\skripsi_2.0\venv\Scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'setuptools==39.1.0','console_scripts','easy_install'
 __requires__ = 'setuptools==39.1.0'
 import re

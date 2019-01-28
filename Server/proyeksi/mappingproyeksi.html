@@ -1,0 +1,207 @@
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Mapping Desa Hantara</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
+    <link rel="stylesheet" type="text/css" href="template/css/bootstrap.min.css">
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' />
+</head>
+
+<body>
+    <div class="card bg-light mb-3">
+        <div class="card-header">
+            <h4>Pemetaan Pemukiman Dasar Desa Hantara</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-9" id="map" style="height: 100%"></div>
+                <div class="col-md-3">
+                    <h5>Legend</h5>
+                    <h6><img style="margin-right: 20px" src="icon/Pemukiman.png"></img>Pemukiman</h6>
+                    <h6><img style="margin-right: 20px" src="icon/Perkebunan.png"></img>Perkebunan</h6>
+                    <h6><img style="margin-right: 20px" src="icon/SawahIrigasi.png"></img>Sawah Irigasi</h6>
+                    <h6><img style="margin-right: 20px" src="icon/SawahNonIrigasi.png"></img>Sawah Non Irigasi</h6>
+                    <h6><img style="margin-right: 20px;" src="icon/Hutan.png"></img>Hutan</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        mapboxgl.accessToken =
+            'pk.eyJ1IjoiZ2lhbjQ4IiwiYSI6ImNqb2g5Y29xazAwaTIzcGxjc2J5bTB4bHcifQ.1uPJOjtSMAXzYQ3lyNdnvg';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/bright-v9',
+            center: [
+                108.45548629760742,
+                -7.057899910599376
+            ],
+            zoom: 14
+        });
+
+        map.on('load', function () {
+            var layers = map.getStyle().layers;
+            var firstSymbolId;
+            map.addLayer({
+                'id': 'hut1',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/hut1.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#006633',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'hut2',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/hut2.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#006633',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'iri1',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/iri1.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#00ff00',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'iri2',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/iri2.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#00ff00',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'nonir1',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/nonir1.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#ffff00',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'nonir2',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/nonir2.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#ffff00',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'keb1',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/keb1.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': '#33cc33',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'pem1',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/pem.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': 'red',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'pem2',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/pem2.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': 'red',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'pem3',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/pem3.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': 'red',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'pem4',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/dasar/pem4.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': 'red',
+                    'fill-opacity': 1
+                }
+            });
+            map.addLayer({
+                'id': 'proyeksi',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': 'geojson/proyeksi/proyeksi.geojson'
+                },
+                'layout': {},
+                'paint': {
+                    'fill-color': 'red',
+                    'fill-opacity': 1
+                }
+            }, firstSymbolId);
+        });
+    </script>
+</body>
+
+</html>
